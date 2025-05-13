@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Media Collection</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="modal.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Boldonse&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header id="header-container"></header>
+
+    
+    <main class="home-content">
+        <section class="hero">
+            <div class="background-slideshow">
+            </div>
+            <div class="hero-content">
+            </div>
+        </section>
+
+        <section class="media-category" id="movies">
+            <h2>Movies <span class="show-all" data-category="movie"></span></h2>
+            <div class="media-scroll-container">
+            </div>
+        </section>
+
+        <section class="media-category" id="tv-shows">
+            <h2>TV Shows <span class="show-all" data-category="tvshow"></span></h2>
+            <div class="media-scroll-container">
+            </div>
+        </section>
+
+        <section class="media-category" id="books">
+            <h2>Books <span class="show-all" data-category="book"></span></h2>
+            <div class="media-scroll-container">
+            </div>
+        </section>
+
+        <section class="media-category" id="games">
+            <h2>Games <span class="show-all" data-category="game"></span></h2>
+            <div class="media-scroll-container">
+            </div>
+        </section>
+
+        <section class="media-category" id="albums">
+            <h2>Music Albums <span class="show-all" data-category="album"></span></h2>
+            <div class="media-scroll-container">
+            </div>
+        </section>
+    </main>
+
+    <footer id="footer-container"></footer>
+
+    <div id="mediaModal" class="modal">
+
+    <div class="modal-backdrop"></div>
+    
+    <div class="modal-container">
+        <div class="modal-content">
+            <button class="close-x-btn">×</button>
+            <div class="modal-inner">
+
+                <div class="modal-banner-container">
+                    <img id="modal-banner" class="modal-banner" src="" alt="Media Banner">
+                    <div class="banner-gradient"></div>
+                    
+                    <!-- Poster positioned over the banner -->
+                    <div class="modal-poster-container">
+                        <img id="modal-poster" class="modal-poster" src="" alt="Media Poster">
+                    </div>
+                </div>
+                
+                <!-- Details section -->
+                <div class="modal-details">
+                    <h3 id="modal-title" class="modal-title"></h3>
+                    
+                    <div class="modal-info">
+                        <div class="modal-info-section">
+                            <p class="modal-text">
+                                <span class="modal-label"></span> 
+                                <span id="modal-release-date"></span>
+                            </p>
+                            
+                            <p class="modal-text">
+                                <span class="modal-label"></span> 
+                                <span id="modal-genre"></span>
+                            </p>
+                            
+                            <p class="modal-text">
+                                <span class="modal-label"></span> 
+                                <span id="modal-director"></span>
+                            </p>
+                            
+                            <p class="modal-text">
+                                <span class="modal-label"></span> 
+                                <span id="modal-cast"></span>
+                            </p>
+                            
+                            <p class="modal-text">
+                                <span class="modal-label"></span>
+                                <span id="modal-description" class="modal-synopsis"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Action buttons -->
+                    <div class="modal-actions">
+                        <button class="watch-now-btn">Watch Now</button>
+                        <div id="spotify-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="header-footer.js"></script>
+    <script src="data.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

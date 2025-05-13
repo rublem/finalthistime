@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add/Delete Media</title>
+    <link rel="stylesheet" href="add-delete.css">
+</head>
+<body>
+    <header id="header-container"></header>
+
+    <main class="add-delete-content">
+        <h2 style="margin-top: 30px;">Add New Media</h2>
+        <form id="add-media-type-form">
+            <div>
+                <label for="mediaType">Media Type:</label>
+                <select id="mediaType">
+                    <option value="">Select Type</option>
+                    <option value="movie">Movie</option>
+                    <option value="tvshow">TV Show</option>
+                    <option value="album">Album</option>
+                    <option value="book">Book</option>
+                    <option value="game">Games</option>
+                </select>
+            </div>
+        </form>
+
+        <form id="add-media-form" style="display: none;">
+            <h2>Add Media Details</h2>
+            <div>
+                <label for="title">Title:</label>
+                <input type="text" id="title">
+            </div>
+            <div>
+                <label for="description">Description:</label>
+                <textarea type="text" id="description"></textarea>
+            </div>
+            <div>
+                <label for="posterUrl">Poster URL:</label>
+                <input type="url" id="posterUrl">
+            </div>
+            <div>
+                <label for="bannerUrl">Banner URL:</label>
+                <input type="url" id="bannerUrl">
+            </div>
+            <div>
+                <label for="releaseYear">Release Year:</label>
+                <input type="text" id="releaseYear" placeholder="e.g. 2024" min="1800" max="2100" required>
+            </div>
+
+            <div id="additional-fields"></div>
+            <input type="hidden" id="type" name="type">
+            <button type="submit">Add Media</button>
+        </form>
+
+        <h2>Existing Media</h2>
+        <div id="existing-media-list"></div>
+    </main>
+
+    <header id="footer-container"></header>
+
+    <script src="header-footer.js"></script>
+    <script src="data.js"></script>
+    <script src="add-delete.js"></script>
+</body>
+</html>

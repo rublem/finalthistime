@@ -1,0 +1,57 @@
+<footer style="bottom: 0;">
+    <div class="footer-content">
+        <p>&copy; 2025 My Media. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </div>
+</footer>
+
+<style>
+    footer {
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #ccc;
+        text-align: center;
+        padding: 15px 20px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 99;
+        font-size: 0.9em;
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .footer-links a {
+        color: #ccc;
+        margin-left: 15px;
+        text-decoration: none;
+        transition: color 0.2s ease-in-out;
+    }
+
+    .footer-links a:hover {
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .footer-content {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-links {
+            margin-top: 10px;
+        }
+
+        .footer-links a {
+            margin: 0 10px;
+        }
+    }
+</style>

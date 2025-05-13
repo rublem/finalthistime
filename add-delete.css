@@ -1,0 +1,166 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    background-color: black;
+    color: white;
+}
+
+/* Main Content (Add/Delete Page) */
+.add-delete-content {
+    padding-top: 80px;
+    padding: 20px;
+}
+
+.add-delete-content h2 {
+    margin-bottom: 15px;
+}
+
+#add-media-type-form {
+    background-color: #222;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+#add-media-type-form div {
+    margin-bottom: 10px;
+}
+
+#add-media-type-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#add-media-type-form select {
+    width: calc(100% - 12px);
+    padding: 8px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: #333;
+    color: white;
+}
+
+#add-media-form {
+    background-color: #222;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: none; /* Initially hidden */
+}
+
+#add-media-form h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+/* Style the div containing the Description label and textarea */
+#add-media-form div:has(label[for="description"]) {
+    margin-bottom: 15px; /* Add some spacing below it if needed */
+}
+
+#add-media-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#add-media-form input[type="text"],
+#add-media-form input[type="url"],
+#add-media-form input[type="date"],
+#add-media-form select,
+#add-media-form textarea {
+    width: calc(100% - 12px);
+    padding: 8px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: #333;
+    color: white;
+}
+
+#add-media-form button[type="submit"] {
+    background-color: #5cb85c;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+#add-media-form button[type="submit"]:hover {
+    background-color: #4cae4c;
+}
+
+#additional-fields div {
+    margin-bottom: 15px;
+}
+
+#additional-fields label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#additional-fields input[type="text"] {
+    width: calc(100% - 12px);
+    padding: 8px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: #333;
+    color: white;
+}
+
+#existing-media-list {
+    /* Styling for the list of existing media */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.existing-media-item {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.existing-media-item img {
+    max-width: 100px;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.existing-media-item h4 {
+    margin-top: 0;
+    font-size: 1em;
+}
+
+.existing-media-item .actions button {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+.existing-media-item .actions button:hover {
+    background-color: #c9302c;
+}
+
+.existing-media-item .actions .fav-top {
+    background-color: #f0ad4e;
+}
+
+.existing-media-item .actions .fav-top:hover {
+    background-color: #eea236;
+}
+@media (max-width: 768px) {
+    #existing-media-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
