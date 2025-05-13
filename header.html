@@ -1,3 +1,4 @@
+
 <header>
     <div class="navbar">
         <a href="index.html" class="logo">
@@ -8,11 +9,7 @@
         </button>
         <nav class="nav-menu">
             <ul>
-                <li><a href="show-all.html?type=movie" data-category="movie">Movies</a></li>
-                <li><a href="show-all.html?type=tvshow" data-category="tvshow">TV Shows</a></li>
-                <li><a href="show-all.html?type=game" data-category="game">Games</a></li>
-                <li><a href="show-all.html?type=book" data-category="book">Books</a></li>
-                <li><a href="show-all.html?type=music" data-category="music">Music Albums</a></li>
+                <li style="padding-left: 500px; padding-right: 650px;"><a href="show-all.html?type=movie" data-category="movie">Browse All</a></li>
                 <li><a href="add-delete.html">Add/Delete</a></li>
             </ul>
         </nav>
@@ -31,6 +28,9 @@
     left: 0;
     right: 0;
     z-index: 100;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
 .logo img {
@@ -49,10 +49,12 @@
 }
 
 .navbar nav ul li a {
-    color: white;
+    color: rgba(201, 201, 201, 0.9);
     text-decoration: none;
     font-size: 16px;
     transition: color 0.3s ease;
+    text-shadow: 1px 1px 2px black; 
+    font-size: 105%;
 }
 
 .navbar nav ul li a:hover {

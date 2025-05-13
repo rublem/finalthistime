@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const booksContainer = document.querySelector('#books .media-scroll-container');
     const gamesContainer = document.querySelector('#games .media-scroll-container');
     const albumsContainer = document.querySelector('#albums .media-scroll-container');
+    
 
     // Get modal elements
     const modal = document.getElementById('mediaModal');
@@ -34,9 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mediaItems = loadMediaItems();
 
     // Display media in the specified container
-    function displayMedia(mediaList, container) {
+    function displayMedia(mediaList, container, limit = Infinity) {
         container.innerHTML = '';
-        mediaList.forEach(media => {
+        mediaList.slice(0, limit).forEach(media => {
             const card = document.createElement('div');
             card.classList.add('media-card');
             card.innerHTML = `
@@ -51,86 +52,124 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function filterMediaByType(type) {
-        return mediaItems.filter(item => item.type === type);
+    // Add arrow buttons to a media category
+    function addScrollArrows(category, container) {
+        const leftArrow = document.createElement('button');
+        leftArrow.classList.add('scroll-arrow', 'left');
+        leftArrow.innerHTML = '←';
+        leftArrow.disabled = true; // Initially disabled (at start)
+        category.appendChild(leftArrow);
+
+        const rightArrow = document.createElement('button');
+        rightArrow.classList.add('scroll-arrow', 'right');
+        rightArrow.innerHTML = '→';
+        rightArrow.disabled = container.scrollWidth <= container.clientWidth; // Disable if no overflow
+        category.appendChild(rightArrow);
+
+        // Update arrow states based on scroll position
+        function updateArrows() {
+            leftArrow.disabled = container.scrollLeft <= 0;
+            rightArrow.disabled = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+        }
+
+        // Scroll left/right by container width
+        leftArrow.addEventListener('click', () => {
+            container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
+            setTimeout(updateArrows, 300); // Update after scroll animation
+        });
+
+        rightArrow.addEventListener('click', () => {
+            container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
+            setTimeout(updateArrows, 300);
+        });
+
+        // Update arrows on scroll
+        container.addEventListener('scroll', updateArrows);
+        updateArrows(); // Initial check
     }
 
+    // Filter media by type
+       function filterMediaByType(type) {
+        if (Array.isArray(mediaItems)) {
+            return mediaItems.filter(item => item.type === type);
+        }
+        return mediaItems && mediaItems.type === type ? [mediaItems] : [];
+    }
+    
+
+    // Get top or favorite media
     function getTopOrFavoriteMedia() {
-        return mediaItems.filter(item => item.isTopPicked || item.isFavorite);
+        if (Array.isArray(mediaItems)) {
+            return mediaItems.filter(item => item.isTopPicked || item.isFavorite);
+        }
+        return mediaItems && (mediaItems.isTopPicked || mediaItems.isFavorite) ? [mediaItems] : [];
     }
 
+    // Display hero media
     function displayHeroMedia(media) {
-    if (media) {
-        let actionButton = '';
-        let actionText = '';
-        let actionUrl = '';
+        if (media) {
+            let actionButton = '';
+            let actionText = '';
+            let actionUrl = '';
 
-        if (media.type === 'movie' || media.type === 'tvshow') {
-            actionText = media.watchUrl ? 'Watch Now' : null;
-            actionUrl = media.watchUrl;
-        } else if (media.type === 'book') {
-            actionText = media.readUrl ? 'Read Now' : null;
-            actionUrl = media.readUrl;
-        } else if (media.type === 'game') {
-            actionText = media.downloadUrl ? 'Play Now' : null;
-            actionUrl = media.downloadUrl;
-        } else if (media.type === 'album') {
-            actionText = media.watchUrl ? 'Listen Now' : null;
-            actionUrl = media.watchUrl;
+            if (media.type === 'movie' || media.type === 'tvshow') {
+                actionText = 'Watch Now';
+                actionUrl = media.watchUrl;
+            } else if (media.type === 'book') {
+                actionText = 'Read Now';
+                actionUrl = media.readUrl;
+            } else if (media.type === 'game') {
+                actionText = 'Play Now';
+                actionUrl = media.downloadUrl;
+            } else if (media.type === 'album') {
+                actionText = 'Listen Now';
+                actionUrl = media.spotifyEmbedUrl;
+                console.log('Hero Spotify URL:', media.spotifyEmbedUrl);
+            }
+
+            if (actionUrl) {
+                actionButton = `<a href="${actionUrl}" target="_blank" class="hero-button action">${actionText}</a>`;
+            } else {
+                actionButton = `<button class="hero-button action disabled" disabled>${actionText || 'No Action'}</button>`;
+            }
+
+            let trailerButton = '';
+            if (media.trailerUrl) {
+                trailerButton = `<a href="${media.trailerUrl}" target="_blank" class="hero-button trailer">Trailer</a>`;
+            } else {
+                trailerButton = `<button class="hero-button trailer disabled" disabled>Trailer</button>`;
+            }
+
+            let castInfo = '';
+            if ((media.type === 'movie' || media.type === 'tvshow') && media.cast) {
+                castInfo = `<p class="hero-cast"><span class="cast-label">Cast:</span> ${media.cast}</p>`;
+            } else if (media.type === 'album' && media.artist) {
+                castInfo = `<p class="hero-artist"><span class="artist-label">Artist:</span> ${media.artist}</p>`;
+            }
+
+            heroContentContainer.innerHTML = `
+                <h1>${media.title}</h1>
+                <p>${media.description || ''}</p>
+                <p class="hero-meta">
+                    <span class="media-type">${media.type.toUpperCase()}</span>
+                    <span class="release-year">${media.releaseYear || ''}</span>
+                </p>
+                ${castInfo}
+                <div class="hero-buttons">
+                    ${actionButton}
+                    ${trailerButton}
+                </div>
+            `;
+            backgroundSlideshow.style.backgroundImage = `url('${media.bannerUrl}')`;
         }
-
-        if (actionText) {
-            actionButton = `<a href="${actionUrl}" target="_blank" class="hero-button action">${actionText}</a>`;
-        } else {
-            actionButton = `<button class="hero-button action disabled">No Link</button>`;
-        }
-
-        let trailerButton = '';
-        if ((media.type === 'movie' || media.type === 'tvshow') && media.trailerUrl) {
-            trailerButton = `<a href="${media.trailerUrl}" target="_blank" class="hero-button trailer">Trailer</a>`;
-        } else if (media.type === 'game' && media.trailerUrl) {
-            trailerButton = `<a href="${media.trailerUrl}" target="_blank" class="hero-button trailer">Trailer</a>`;
-        } else {
-            trailerButton = `<button class="hero-button trailer disabled">Trailer</button>`;
-        }
-
-        let additionalInfo = '';
-        if (media.type === 'game' && media.platform) {
-            additionalInfo += `<p class="hero-meta"><span class="meta-label">Platform:</span> ${media.platform}</p>`;
-        }
-        if ((media.type === 'movie' || media.type === 'tvshow') && media.cast) {
-            additionalInfo += `<p class="hero-cast"><span class="cast-label">Cast:</span> ${media.cast}</p>`;
-        } else if (media.type === 'book' && media.author) {
-            additionalInfo += `<p class="hero-author"><span class="author-label">Author:</span> ${media.author}</p>`;
-        } else if (media.type === 'album' && media.artist) {
-            additionalInfo += `<p class="hero-artist"><span class="artist-label">Artist:</span> ${media.artist}</p>`;
-        } else if (media.type === 'game' && media.developer) {
-            additionalInfo += `<p class="hero-developer"><span class="developer-label">Developer:</span> ${media.developer}</p>`;
-        }
-
-
-        heroContentContainer.innerHTML = `
-            <h1>${media.title}</h1>
-            <p>${media.description || ''}</p>
-            <p class="hero-meta">
-                <span class="media-type">${media.type.toUpperCase()}</span>
-                <span class="release-year">${media.releaseYear || ''}</span>
-            </p>
-            ${additionalInfo}
-            <div class="hero-buttons">
-                ${actionButton}
-                ${trailerButton}
-            </div>
-        `;
-        backgroundSlideshow.style.backgroundImage = `url('${media.bannerUrl}')`;
     }
-}
+
     function startBackgroundSlideshow(mediaList) {
-        backgroundSlideshow.innerHTML = ''; // Clear existing slides
-        const validMedia = mediaList.filter(media => media.bannerUrl); // Filter out media without bannerUrls
+        backgroundSlideshow.innerHTML = '';
+        const validMedia = Array.isArray(mediaList) ? mediaList.filter(media => media.bannerUrl) : (mediaList && mediaList.bannerUrl ? [mediaList] : []);
 
         if (validMedia.length === 0) {
-            return; // Don't start if there are no valid slides.
+            return;
         }
 
         validMedia.forEach(media => {
@@ -143,22 +182,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const slides = document.querySelectorAll('.slide');
         let currentIndex = 0;
 
-        // Ensure slides are found
         if (slides.length > 0) {
-            slides[currentIndex].classList.add('active'); // Show first slide
-            displayHeroMedia(validMedia[currentIndex]); // Display hero content for the first slide
+            slides[currentIndex].classList.add('active');
+            displayHeroMedia(validMedia[currentIndex]);
 
-            function showSlide() {
-                slides.forEach(slide => slide.classList.remove('active'));
-                slides[currentIndex].classList.add('active');
-
-                // Update hero content based on the current slide
-                const currentMedia = validMedia[currentIndex];
-                displayHeroMedia(currentMedia);
-
-                currentIndex = (currentIndex + 1) % slides.length;
+            if (slides.length > 1) {
+                function showSlide() {
+                    slides.forEach(slide => slide.classList.remove('active'));
+                    slides[currentIndex].classList.add('active');
+                    displayHeroMedia(validMedia[currentIndex]);
+                    currentIndex = (currentIndex + 1) % slides.length;
+                }
+                setInterval(showSlide, 5000);
             }
-            setInterval(showSlide, 5000);
         }
     }
 
@@ -170,55 +206,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Display media by category
-    const movies = filterMediaByType('movie').slice(0, 5);
-    const tvShows = filterMediaByType('tvshow').slice(0, 5);
-    const books = filterMediaByType('book').slice(0, 5);
-    const games = filterMediaByType('game').slice(0, 5);
-    const albums = filterMediaByType('album').slice(0, 5);
+    const itemsPerCategory = 10;
+    const movies = filterMediaByType('movie');
+    const tvShows = filterMediaByType('tvshow');
+    const books = filterMediaByType('book');
+    const games = filterMediaByType('game');
+    const albums = filterMediaByType('album');
 
+    displayMedia(movies, moviesContainer, itemsPerCategory);
+    displayMedia(tvShows, tvShowsContainer, itemsPerCategory);
+    displayMedia(books, booksContainer, itemsPerCategory);
+    displayMedia(games, gamesContainer, itemsPerCategory);
+    displayMedia(albums, albumsContainer, itemsPerCategory);
 
-    displayMedia(movies, moviesContainer);
-    displayMedia(tvShows, tvShowsContainer);
-    displayMedia(books, booksContainer);
-    displayMedia(games, gamesContainer);
-    displayMedia(albums, albumsContainer);
+    // Add scroll arrows to each category
+    const categories = [
+        { element: document.querySelector('#movies'), container: moviesContainer },
+        { element: document.querySelector('#tv-shows'), container: tvShowsContainer },
+        { element: document.querySelector('#books'), container: booksContainer },
+        { element: document.querySelector('#games'), container: gamesContainer },
+        { element: document.querySelector('#albums'), container: albumsContainer }
+    ];
 
-
+    categories.forEach(({ element, container }) => {
+        if (element && container) {
+            addScrollArrows(element, container);
+        }
+    });
 
     function openModal(media) {
         const spotifyContainer = document.getElementById('spotify-container');
         const watchNowBtn = document.querySelector('.watch-now-btn');
         const modalActions = document.querySelector('.modal-actions');
 
-        // Clear any existing content
         spotifyContainer.innerHTML = '';
-        modalActions.innerHTML = ''; // Clear existing buttons to avoid duplicates
-        modalInfoSection.innerHTML = ''; // Clear existing info content
+        modalActions.innerHTML = '';
+        modalInfoSection.innerHTML = '';
 
-        // Set the modal content
-        modalTitle.textContent = media.title || 'Untitled';
+        const releaseDate = media.releaseDate || (media.releaseYear ? `${media.releaseYear}` : '');
+        modalTitle.innerHTML = releaseDate
+            ? `${media.title || 'Untitled'} <span class="release-date">(${releaseDate})</span>`
+            : media.title || 'Untitled';
+
         modalPoster.src = media.posterUrl || '';
         modalPoster.alt = `${media.title || 'Media'} Poster`;
-
-        // Set the banner image - use bannerUrl if available, otherwise use posterUrl
         modalBanner.src = media.bannerUrl || media.posterUrl || '';
         modalBanner.alt = `${media.title || 'Media'} Banner`;
 
-        // Dynamically build modal-info-section
         const fields = [];
 
-        // Release date
-        const releaseDate = media.releaseDate || (media.releaseYear ? `${media.releaseYear}` : '');
-        if (releaseDate) {
-            fields.push({ label: 'Release Date', value: releaseDate });
-        }
-
-        // Genre
         if (media.genre) {
             fields.push({ label: 'Genre', value: media.genre });
         }
 
-        // Director/Author/Developer/Artist
         if (media.type === 'movie' || media.type === 'tvshow') {
             if (media.director) {
                 fields.push({ label: 'Director', value: media.director });
@@ -253,17 +293,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (media.label) {
                 fields.push({ label: 'Label', value: media.label });
             }
-            if (media.spotifyEmbedUrl) {
-                // Spotify Embed URL will be handled by the Spotify link below
-            }
         }
 
-        // Description
         if (media.description) {
-            fields.push({ label: 'Synopsis', value: media.description, className: 'modal-synopsis' });
+            fields.push({ label: 'Description', value: media.description, className: 'modal-synopsis' });
         }
 
-        // Render fields
         fields.forEach(field => {
             const p = document.createElement('p');
             p.classList.add('modal-text');
@@ -274,7 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
             modalInfoSection.appendChild(p);
         });
 
-        // Handle "Watch Now/Read Now/Play Now/Listen Now" button
         modalActions.appendChild(watchNowBtn);
         let watchNowText = '';
         let watchNowUrl = '';
@@ -289,14 +323,13 @@ document.addEventListener('DOMContentLoaded', () => {
             watchNowUrl = media.downloadUrl;
         } else if (media.type === 'album') {
             watchNowText = 'Listen Now';
-            watchNowUrl = media.spotifyEmbedUrl; // Use spotifyEmbedUrl for albums
+            watchNowUrl = media.spotifyEmbedUrl;
         }
         watchNowBtn.textContent = watchNowText;
         watchNowBtn.onclick = watchNowUrl ? () => window.open(watchNowUrl, '_blank') : null;
         watchNowBtn.disabled = !watchNowUrl;
         watchNowBtn.style.opacity = watchNowUrl ? '1' : '0.5';
 
-        // Add Spotify link if available (redundant now, but kept for potential other uses)
         if (media.type === 'album' && media.spotifyEmbedUrl) {
             const spotifyLink = document.createElement('a');
             spotifyLink.href = media.spotifyEmbedUrl;
@@ -305,34 +338,51 @@ document.addEventListener('DOMContentLoaded', () => {
             spotifyLink.rel = 'noopener noreferrer';
             spotifyLink.textContent = 'Open in Spotify';
             spotifyLink.classList.add('spotify-btn');
-            Object.assign(spotifyLink.style, { display: 'inline-block', backgroundColor: '#1DB954', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '0.375rem', fontWeight: '600', marginLeft: '0.75rem', textDecoration: 'none' });
+            Object.assign(spotifyLink.style, {
+                display: 'inline-block',
+                backgroundColor: '#1DB954',
+                color: 'white',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.375rem',
+                fontWeight: '600',
+                marginLeft: '0.75rem',
+                textDecoration: 'none'
+            });
             spotifyContainer.appendChild(spotifyLink);
         }
 
-        // Add Watch Trailer button if trailerUrl exists (only for movies and TV shows for now)
         if (media.trailerUrl && (media.type === 'movie' || media.type === 'tvshow')) {
             const trailerBtn = document.createElement('button');
             trailerBtn.classList.add('trailer-btn');
             trailerBtn.textContent = 'Watch Trailer';
-            Object.assign(trailerBtn.style, { backgroundColor: '#6b7280', color: 'white', fontWeight: '600', padding: '0.75rem 1.5rem', borderRadius: '0.375rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', cursor: 'pointer', transition: 'background-color 0.3s', border: 'none', marginLeft: '0.5rem' });
+            Object.assign(trailerBtn.style, {
+                backgroundColor: '#6b7280',
+                color: 'white',
+                fontWeight: '600',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.375rem',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s',
+                border: 'none',
+                marginLeft: '0.5rem'
+            });
             trailerBtn.onclick = () => window.open(media.trailerUrl, '_blank');
             trailerBtn.addEventListener('mouseover', () => trailerBtn.style.backgroundColor = '#4b5563');
             trailerBtn.addEventListener('mouseout', () => trailerBtn.style.backgroundColor = '#6b7280');
             modalActions.appendChild(trailerBtn);
         }
 
-        // Show modal
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
     }
-    // Function to close modal
+
     function closeModal() {
         modal.style.display = 'none';
         document.body.style.overflow = '';
-        location.reload(); // Refresh the page (optional, can remove if fixed)
+        window.location.reload(false);
     }
 
-    // Modal event listeners
     if (closeButton) {
         closeButton.addEventListener('click', closeModal);
     }
@@ -346,13 +396,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Add event listeners to media cards
     function addCardListeners() {
         const mediaCards = document.querySelectorAll('.media-card');
         mediaCards.forEach(card => {
             card.addEventListener('click', () => {
                 const title = card.querySelector('h3').textContent;
-                const mediaItem = mediaItems.find(item => item.title === title);
+                const mediaItem = Array.isArray(mediaItems) ? mediaItems.find(item => item.title === title) : mediaItems;
                 if (mediaItem) {
                     openModal(mediaItem);
                 }
@@ -360,15 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initialize card listeners if media items exist
-    if (mediaItems.length > 0) {
+    if (mediaItems && (Array.isArray(mediaItems) ? mediaItems.length > 0 : true)) {
         addCardListeners();
     }
-
-    // Initial display of media categories
-    displayMedia(movies, moviesContainer);
-    displayMedia(tvShows, tvShowsContainer);
-    displayMedia(books, booksContainer);
-    displayMedia(games, gamesContainer);
-    displayMedia(albums, albumsContainer);
 });

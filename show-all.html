@@ -1,23 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Media</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Show All Media</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Boldonse&display=swap" rel="stylesheet">
+  <style>
+
+    /* style.css */
+
+  </style>
 </head>
 <body>
-    <header id="header-container"></header>
+  <header id="header-container"></header>
 
-    <main class="show-all-page">
-        <h1 id="page-title"></h1>
-        <div id="all-media-list" class="media-grid-container">
+  <div class="filter-bar">
+    <button class="filter-button active" data-filter="all">All</button>
+    <button class="filter-button" data-filter="movie">Movies</button>
+    <button class="filter-button" data-filter="tv">TV Shows</button>
+    <button class="filter-button" data-filter="game">Games</button>
+    <button class="filter-button" data-filter="book">Books</button>
+    <button class="filter-button" data-filter="music">Music</button>
+  </div>
+
+  <div class="section" id="all-media-section">
+    <h2>All Media</h2>
+    <div class="media-grid" id="allMediaGrid"></div>
+  </div>
+
+  <div id="mediaModal" class="modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-content">
+        <button class="close-x-btn">×</button>
+        <div class="modal-inner">
+          <div class="modal-banner-container">
+            <img id="modal-banner" class="modal-banner" src="" alt="Media Banner">
+            <div class="banner-gradient"></div>
+            <div class="modal-poster-container">
+              <img id="modal-poster" class="modal-poster" src="" alt="Media Poster">
             </div>
-    </main>
+          </div>
+          <div class="modal-details">
+            <h3 id="modal-title" class="modal-title"></h3>
+            <div class="modal-info">
+              <div class="modal-info-section"></div>
+            </div>
+            <div class="modal-actions">
+              <button class="watch-now-btn">Watch Now</button>
+              <div id="spotify-container"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <header id="footer-container"></header>
+  <footer id="footer-container"></footer>
 
-    <script src="header-footer.js"></script>
-    <script src="show-all.js"></script>
+  <script>
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      const allMediaGrid = document.getElementById('allMediaGrid');
+      const filterButtons = document.querySelectorAll('.filter-button');
+      const modal = document.getElementById('mediaModal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalPoster = document.getElementById('modal-poster');
+      const modalBanner = document.getElementById('modal-banner');
+      const modalInfoSection = document.querySelector('.modal-info-section');
+      const closeButton = document.querySelector('.close-x-btn');
+      const modalBackdrop = document.querySelector('.modal-backdrop');
+      const localStorageKey = 'myMediaCollectionData';
+
+      // Initially hide the modal
+      modal.style.display = 'none';
+
+      // Load media items from localStorage
+      function loadMediaItems() {
+        const storedData = localStorage.getItem(localStorageKey);
+        return storedData ? JSON.parse(storedData) : [];
+      }
+
+      // Display media in the grid
+      function displayMedia(mediaList) {
+        allMediaGrid.innerHTML = '';
+        mediaList.forEach(media => {
+          const card = document.createElement('div');
+          card.classList.add('media-card');
+          card.innerHTML = `
+            <img src="${media.posterUrl}" alt="${media.title}">
+            <div class="media-card-info">
+              <h3>${media.title}</h3>
+              <p>${media.releaseYear || ''}</p>
+            </div>
+          `;
+          card.addEventListener('click', () => openModal(media));
+          allMediaGrid.appendChild(card);
+        });
+      }
+
+      // Filter media by type
+      function filterMedia(filterValue) {
+        const allMedia = loadMediaItems();
+        if (filterValue === 'all') {
+          displayMedia(allMedia);
+          return;
+        }
+        const filteredMedia = allMedia.filter(media => {
+          return media.type && media.type.toLowerCase() === filterValue;
+        });
+        displayMedia(filteredMedia);
+      }
+
+      // Open modal with media details
+      function openModal(media) {
+        const spotifyContainer = document.getElementById('spotify-container');
+        const watchNowBtn = document.querySelector('.watch-now-btn');
+        const modalActions = document.querySelector('.modal-actions');
+
+        spotifyContainer.innerHTML = '';
+        modalActions.innerHTML = '';
+        modalInfoSection.innerHTML = '';
+
+        const releaseDate = media.releaseDate || (media.releaseYear ? `${media.releaseYear}` : '');
+        modalTitle.innerHTML = releaseDate
+          ? `${media.title || 'Untitled'} <span class="release-date">(${releaseDate})</span>`
+          : media.title || 'Untitled';
+
+        modalPoster.src = media.posterUrl || '';
+        modalPoster.alt = `${media.title || 'Media'} Poster`;
+        modalBanner.src = media.bannerUrl || media.posterUrl || '';
+        modalBanner.alt = `${media.title || 'Media'} Banner`;
+
+        const fields = [];
+        if (media.genre) fields.push({ label: 'Genre', value: media.genre });
+        if (media.type === 'movie' || media.type === 'tvshow') {
+          if (media.director) fields.push({ label: 'Director', value: media.director });
+          if (media.cast) fields.push({ label: 'Cast', value: media.cast });
+        } else if (media.type === 'book') {
+          if (media.author) fields.push({ label: 'Author', value: media.author });
+          if (media.publisher) fields.push({ label: 'Publisher', value: media.publisher });
+        } else if (media.type === 'game') {
+          if (media.developer) fields.push({ label: 'Developer', value: media.developer });
+          if (media.platform) fields.push({ label: 'Platform', value: media.platform });
+          if (media.genre) fields.push({ label: 'Genre', value: media.genre });
+        } else if (media.type === 'album') {
+          if (media.artist) fields.push({ label: 'Artist', value: media.artist });
+          if (media.genre) fields.push({ label: 'Genre', value: media.genre });
+          if (media.label) fields.push({ label: 'Label', value: media.label });
+        }
+        if (media.description) fields.push({ label: 'Description', value: media.description, className: 'modal-synopsis' });
+
+        fields.forEach(field => {
+          const p = document.createElement('p');
+          p.classList.add('modal-text');
+          if (field.className) p.className = field.className;
+          p.innerHTML = `<span class="modal-label">${field.label}:</span> <span>${field.value}</span>`;
+          modalInfoSection.appendChild(p);
+        });
+
+        modalActions.appendChild(watchNowBtn);
+        let watchNowText = '';
+        let watchNowUrl = '';
+        if (media.type === 'movie' || media.type === 'tvshow') {
+          watchNowText = 'Watch Now';
+          watchNowUrl = media.watchUrl;
+        } else if (media.type === 'book') {
+          watchNowText = 'Read Now';
+          watchNowUrl = media.readUrl;
+        } else if (media.type === 'game') {
+          watchNowText = 'Play Now';
+          watchNowUrl = media.downloadUrl;
+        } else if (media.type === 'album') {
+          watchNowText = 'Listen Now';
+          watchNowUrl = media.spotifyEmbedUrl;
+        }
+        watchNowBtn.textContent = watchNowText;
+        watchNowBtn.onclick = watchNowUrl ? () => window.open(watchNowUrl, '_blank') : null;
+        watchNowBtn.disabled = !watchNowUrl;
+        watchNowBtn.style.opacity = watchNowUrl ? '1' : '0.5';
+
+        if (media.type === 'album' && media.spotifyEmbedUrl) {
+          const spotifyLink = document.createElement('a');
+          spotifyLink.href = media.spotifyEmbedUrl;
+          spotifyLink.id = 'modal-spotify-url';
+          spotifyLink.target = '_blank';
+          spotifyLink.rel = 'noopener noreferrer';
+          spotifyLink.textContent = 'Open in Spotify';
+          spotifyLink.classList.add('spotify-btn');
+          Object.assign(spotifyLink.style, {
+            display: 'inline-block',
+            backgroundColor: '#1DB954',
+            color: 'white',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '0.375rem',
+            fontWeight: '600',
+            marginLeft: '0.75rem',
+            textDecoration: 'none'
+          });
+          spotifyContainer.appendChild(spotifyLink);
+        }
+
+        if (media.trailerUrl && (media.type === 'movie' || media.type === 'tvshow')) {
+          const trailerBtn = document.createElement('button');
+          trailerBtn.classList.add('trailer-btn');
+          trailerBtn.textContent = 'Watch Trailer';
+          Object.assign(trailerBtn.style, {
+            backgroundColor: '#6b7280',
+            color: 'white',
+            fontWeight: '600',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '0.375rem',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+            cursor: 'pointer',
+            transition: 'background-color 0.3s',
+            border: 'none',
+            marginLeft: '0.5rem'
+          });
+          trailerBtn.onclick = () => window.open(media.trailerUrl, '_blank');
+          trailerBtn.addEventListener('mouseover', () => trailerBtn.style.backgroundColor = '#4b5563');
+          trailerBtn.addEventListener('mouseout', () => trailerBtn.style.backgroundColor = '#6b7280');
+          modalActions.appendChild(trailerBtn);
+        }
+
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+
+      // Close modal
+      function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        window.location.reload(false);
+      }
+
+      // Event listeners for closing modal
+      if (closeButton) closeButton.addEventListener('click', closeModal);
+      if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+      const modalContent = document.querySelector('.modal-content');
+      if (modalContent) {
+        modalContent.addEventListener('click', (event) => {
+          event.stopPropagation();
+        });
+      }
+
+      // Load and display all media initially
+      const allMedia = loadMediaItems();
+      displayMedia(allMedia);
+
+      // Filter button event listeners
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          const filterValue = this.dataset.filter;
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          filterMedia(filterValue);
+        });
+      });
+    });
+   
+  </script>
+
+  <script src="header-footer.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
