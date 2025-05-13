@@ -63,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="actions">
                 <button class="delete-button" data-id="${media.id}">Delete</button>
                 <button class="fav-top ${media.isFavorite ? 'favorite' : ''}" data-id="${media.id}" data-action="favorite">${media.isFavorite ? 'Unfavorite' : 'Favorite'}</button>
-                <button class="fav-top ${media.isTopPicked ? 'top-picked' : ''}" data-id="${media.id}" data-action="top-picked">${media.isTopPicked ? 'Untop' : 'Top'}</button>
             </div>
         `;
         existingMediaList.appendChild(mediaItem);

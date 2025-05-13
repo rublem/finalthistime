@@ -1,195 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header</title>
+    <style>
+        .navbar {
+            height: 70px;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background-color: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
 
-<header>
-    <div class="navbar">
-        <a href="index.html" class="logo">
-            <img src="logo.png" alt="My Media Logo">
-        </a>
-        <button class="menu-toggle" aria-label="Toggle navigation">
-            <span class="hamburger"></span>
-        </button>
-        <nav class="nav-menu">
-            <ul>
-                <li style="padding-left: 500px; padding-right: 626px;"><a href="show-all.html?type=movie" data-category="movie">Browse All</a></li>
-                <li><a href="add-delete.html">Add/Delete</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
+        .logo {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
 
-<style>
-.navbar {
-    height: 70px;
-    padding: 0 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    background-color: transparent;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    overflow: visible;
-}
+        .logo img {
+            height: 60px;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.6));
+            transition: transform 0.3s ease;
+        }
 
-.logo {
-    position: relative;
-    display: flex;
-    align-items: center;
-    height: 100%;
-}
+        .logo img:hover {
+            transform: scale(1.05);
+        }
 
-.logo img {
-    height: 60px;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.6));
-    transition: transform 0.3s ease;
-    z-index: 1;
-}
+        .nav-menu {
+            display: flex;
+            align-items: center;
+        }
 
-.logo img:hover {
-    transform: translateY(-50%) scale(1.05);
-}
+        .navbar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            width: auto;
+        }
 
-.navbar nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-}
+        .navbar nav ul li {
+            margin-left: 20px;
+        }
 
-.navbar nav ul li {
-    margin-left: 20px;
-}
+        .navbar nav ul li:first-child {
+            margin-left: 0;
+        }
 
-.navbar nav ul li a {
-    color: rgba(201, 201, 201, 0.9);
-    text-decoration: none;
-    font-size: 16px;
-    transition: color 0.3s ease;
-    text-shadow: 1px 1px 2px black; 
-    font-size: 105%;
-}
+        .navbar nav ul li a {
+            color: rgba(201, 201, 201, 0.9);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+            text-shadow: 1px 1px 2px black;
+            font-size: 105%;
+        }
 
-.navbar nav ul li a:hover {
-    color: #af1818;
-}
+        .navbar nav ul li a:hover {
+            color: #af1818;
+        }
 
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 101;
-}
 
-.hamburger,
-.hamburger::before,
-.hamburger::after {
-    content: '';
-    display: block;
-    width: 25px;
-    height: 3px;
-    background: white;
-    transition: all 0.3s ease;
-}
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 15px;
+                height: 50px; 
+            }
 
-.hamburger::before {
-    transform: translateY(-8px);
-}
+            .logo img {
+                height: 40px;
+            }
 
-.hamburger::after {
-    transform: translateY(5px);
-}
+            .navbar nav ul li {
+                margin-left: 10px;
+            }
 
-.menu-toggle.active .hamburger {
-    background: transparent;
-}
+            .navbar nav ul li a {
+                font-size: 12px;
+            }
+        }
 
-.menu-toggle.active .hamburger::before {
-    transform: rotate(45deg);
-}
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 0 10px;
+                height: 40px;
+            }
 
-.menu-toggle.active .hamburger::after {
-    transform: rotate(-45deg);
-}
+            .logo img {
+                height: 30px;
+            }
 
-/* Media Queries for Responsiveness */
-@media (max-width: 768px) {
-    .navbar {
-        padding: 10px 15px;
-    }
+            .navbar nav ul li {
+                margin-left: 8px;
+            }
 
-    .menu-toggle {
-        display: block;
-    }
+            .navbar nav ul li a {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="My Media Logo">
+            </a>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="show-all.html?type=movie" data-category="movie">BROWSE ALL</a></li>
+                    <li><a href="add-delete.html">ADD/DELETE</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-    .nav-menu {
-        display: none;
-        width: 100%;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background-color: rgba(0, 0, 0, 0.9);
-        padding: 10px 0;
-    }
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-    .nav-menu.active {
-        display: block;
-    }
-
-    .navbar nav ul {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .navbar nav ul li {
-        margin: 10px 0;
-    }
-
-    .navbar nav ul li a {
-        font-size: 18px;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo img {
-        height: 40px;
-    }
-
-    .navbar nav ul li a {
-        font-size: 16px;
-    }
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-
-    if (!menuToggle || !navMenu) {
-        console.error('Menu toggle or nav menu not found');
-        return;
-    }
-
-    menuToggle.addEventListener('click', () => {
-        console.log('Menu toggle clicked');
-        menuToggle.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-
-    navMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            menuToggle.classList.remove('active');
-            navMenu.classList.remove('active');
         });
-    });
-});
-</script>
+    </script>
+</body>
+</html>

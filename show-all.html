@@ -101,19 +101,22 @@
         });
       }
 
-      // Filter media by type
       function filterMedia(filterValue) {
         const allMedia = loadMediaItems();
         if (filterValue === 'all') {
           displayMedia(allMedia);
           return;
         }
+        // Map filter values to media types
+        const typeToFilter = filterValue === 'tv' ? 'tvshow' : 
+                            filterValue === 'music' ? 'album' : 
+                            filterValue;
         const filteredMedia = allMedia.filter(media => {
-          return media.type && media.type.toLowerCase() === filterValue;
+          return media.type && media.type.toLowerCase() === typeToFilter;
         });
+        console.log('Filtered Media:', filteredMedia); // Debug log
         displayMedia(filteredMedia);
       }
-
       // Open modal with media details
       function openModal(media) {
         const spotifyContainer = document.getElementById('spotify-container');
@@ -260,6 +263,9 @@
         });
       });
     });
+
+    console.log(JSON.parse(localStorage.getItem('myMediaCollectionData')));
+
    
   </script>
 
