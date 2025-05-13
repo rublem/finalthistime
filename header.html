@@ -9,7 +9,7 @@
         </button>
         <nav class="nav-menu">
             <ul>
-                <li style="padding-left: 500px; padding-right: 650px;"><a href="show-all.html?type=movie" data-category="movie">Browse All</a></li>
+                <li style="padding-left: 500px; padding-right: 626px;"><a href="show-all.html?type=movie" data-category="movie">Browse All</a></li>
                 <li><a href="add-delete.html">Add/Delete</a></li>
             </ul>
         </nav>
@@ -17,9 +17,9 @@
 </header>
 
 <style>
-.navbar {    
-    background-color: transparent;
-    padding: 25px 30px;
+.navbar {
+    height: 70px;
+    padding: 0 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -28,13 +28,32 @@
     left: 0;
     right: 0;
     z-index: 100;
+    background-color: transparent;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    overflow: visible;
+}
+
+.logo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 .logo img {
-    height: 50px;
+    height: 60px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.6));
+    transition: transform 0.3s ease;
+    z-index: 1;
+}
+
+.logo img:hover {
+    transform: translateY(-50%) scale(1.05);
 }
 
 .navbar nav ul {

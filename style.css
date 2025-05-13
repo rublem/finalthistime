@@ -118,7 +118,7 @@ body {
 .hero {
     position: relative;
     height: 555px;
-    padding-top: 47px;
+    padding-top: 55px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -522,7 +522,7 @@ body {
     max-width: 800px;
     margin: 2rem auto;
     z-index: 1002;
-    background-color: #1a1a1a;
+    background-color: transparent;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -567,7 +567,8 @@ body {
     bottom: 0;
     width: 100%;
     height: 50%;
-    background: linear-gradient(to top, rgba(26, 26, 26, 1), rgba(26, 26, 26, 0));
+    background: linear-gradient(to top, rgb(0, 0, 0), rgba(26, 26, 26, 0));
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0);
 }
 
 .modal-poster-container {

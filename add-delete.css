@@ -5,7 +5,6 @@ body {
     color: white;
 }
 
-/* Main Content (Add/Delete Page) */
 .add-delete-content {
     padding-top: 80px;
     padding: 20px;
@@ -45,7 +44,7 @@ body {
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
-    display: none; /* Initially hidden */
+    display: none;
 }
 
 #add-media-form h2 {
@@ -53,9 +52,8 @@ body {
     margin-bottom: 15px;
 }
 
-/* Style the div containing the Description label and textarea */
 #add-media-form div:has(label[for="description"]) {
-    margin-bottom: 15px; /* Add some spacing below it if needed */
+    margin-bottom: 15px; 
 }
 
 #add-media-form label {
@@ -109,7 +107,6 @@ body {
 }
 
 #existing-media-list {
-    /* Styling for the list of existing media */
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 15px;
