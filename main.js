@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const albumsContainer = document.querySelector('#albums .media-scroll-container');
     
 
-    // Get modal elements
     const modal = document.getElementById('mediaModal');
     const modalTitle = document.getElementById('modal-title');
     const modalPoster = document.getElementById('modal-poster');
@@ -18,10 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const heroContentContainer = document.querySelector('.hero-content');
     const localStorageKey = 'myMediaCollectionData';
 
-    // Initially hide the modal
     modal.style.display = 'none';
 
-    // Function to load media items from localStorage
     function loadMediaItems() {
         const storedData = localStorage.getItem(localStorageKey);
         if (storedData) {
@@ -31,10 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Load media items on page load
+
     const mediaItems = loadMediaItems();
 
-    // Display media in the specified container
+
     function displayMedia(mediaList, container, limit = Infinity) {
         container.innerHTML = '';
         mediaList.slice(0, limit).forEach(media => {
@@ -163,49 +160,72 @@ document.addEventListener('DOMContentLoaded', () => {
             backgroundSlideshow.style.backgroundImage = `url('${media.bannerUrl}')`;
         }
     }
-
-    function startBackgroundSlideshow(mediaList) {
-        backgroundSlideshow.innerHTML = '';
-        const validMedia = Array.isArray(mediaList) ? mediaList.filter(media => media.bannerUrl) : (mediaList && mediaList.bannerUrl ? [mediaList] : []);
-
-        if (validMedia.length === 0) {
-            return;
+        function getLogo() {
+            return "logo.png";
         }
 
-        validMedia.forEach(media => {
-            const slide = document.createElement('div');
-            slide.classList.add('slide');
-            slide.style.backgroundImage = `url('${media.bannerUrl}')`;
-            backgroundSlideshow.appendChild(slide);
-        });
+function startBackgroundSlideshow(mediaList) {
+    backgroundSlideshow.innerHTML = '';
 
-        const slides = document.querySelectorAll('.slide');
-        let currentIndex = 0;
+    const validMedia = Array.isArray(mediaList)
+        ? mediaList.filter(media => media.bannerUrl)
+        : (mediaList && mediaList.bannerUrl ? [mediaList] : []);
 
-        if (slides.length > 0) {
-            slides[currentIndex].classList.add('active');
-            displayHeroMedia(validMedia[currentIndex]);
 
-            if (slides.length > 1) {
-                function showSlide() {
-                    slides.forEach(slide => slide.classList.remove('active'));
-                    slides[currentIndex].classList.add('active');
-                    displayHeroMedia(validMedia[currentIndex]);
-                    currentIndex = (currentIndex + 1) % slides.length;
-                }
-                setInterval(showSlide, 5000);
+    if (validMedia.length === 0) {
+        const logoSlide = document.createElement('div');
+        logoSlide.classList.add('slide', 'logo-slide', 'active'); 
+        const logoUrl = getLogo();
+        logoSlide.style.backgroundImage = `url('${logoUrl}')`;
+        logoSlide.style.backgroundSize = 'contain';
+        logoSlide.style.backgroundRepeat = 'no-repeat';
+        logoSlide.style.backgroundPosition = 'center';
+        logoSlide.style.backgroundPosition = 'center calc(50% - 70px)';
+        logoSlide.style.width = '100%'; 
+        logoSlide.style.height = '100%'; 
+        backgroundSlideshow.appendChild(logoSlide);
+
+        const img = new Image();
+        img.src = logoUrl;
+        img.onload = () => console.log('Logo image loaded successfully:', logoUrl);
+        img.onerror = () => {
+            console.error('Failed to load logo image:', logoUrl);
+            logoSlide.style.backgroundImage = `url('https://via.placeholder.com/1920x1080')`; // Fallback
+        };
+
+        displayHeroMedia(null);
+        return;
+    }
+
+
+    validMedia.forEach(media => {
+        const slide = document.createElement('div');
+        slide.classList.add('slide');
+        slide.style.backgroundImage = `url('${media.bannerUrl}')`;
+        backgroundSlideshow.appendChild(slide);
+    });
+
+    const slides = document.querySelectorAll('.slide');
+    let currentIndex = 0;
+
+    if (slides.length > 0) {
+        slides[currentIndex].classList.add('active');
+        displayHeroMedia(validMedia[currentIndex]);
+
+        if (slides.length > 1) {
+            function showSlide() {
+                slides.forEach(slide => slide.classList.remove('active'));
+                slides[currentIndex].classList.add('active');
+                displayHeroMedia(validMedia[currentIndex]);
+                currentIndex = (currentIndex + 1) % slides.length;
             }
+            setInterval(showSlide, 5000);
         }
     }
+}
+const topOrFavoriteMedia = getTopOrFavoriteMedia();
+startBackgroundSlideshow(topOrFavoriteMedia);
 
-    // Top or favorite media
-    const topOrFavoriteMedia = getTopOrFavoriteMedia();
-    if (topOrFavoriteMedia.length > 0) {
-        displayHeroMedia(topOrFavoriteMedia[0]);
-        startBackgroundSlideshow(topOrFavoriteMedia);
-    }
-
-    // Display media by category
     const itemsPerCategory = 10;
     const movies = filterMediaByType('movie');
     const tvShows = filterMediaByType('tvshow');
