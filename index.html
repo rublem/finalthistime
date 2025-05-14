@@ -44,7 +44,7 @@
         <div class="modal-backdrop"></div>
         <div class="modal-container">
             <div class="modal-content">
-                <button class="close-x-btn">×</button>
+                <button class="close-x-btn"></button>
                 <div class="modal-inner">
                     <div class="modal-banner-container">
                         <img id="modal-banner" class="modal-banner" src="" alt="Media Banner">
@@ -70,7 +70,6 @@
     <footer id="footer-container"></footer>
 
     <script>
-        // Redirect to ensure correct origin for localStorage
         const preferredOrigin = 'http://127.0.0.1:5500';
         if (window.location.origin !== preferredOrigin) {
             window.location.replace(preferredOrigin + window.location.pathname + window.location.search);
